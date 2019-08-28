@@ -113,7 +113,7 @@ class ThreadClient extends Thread {
 			this.os.writeObject("*** Bienvenue " + nomDuClient + " à CNAM chat room ***\nSaisir _quit pour quiter le Serveur");
 			this.os.flush();
 
-			this.os.writeObject("Répertoire créé pour recevoir des fichiers");
+			this.os.writeObject("Répertoire créé pour recevoir des fichiers"); // a implementer
 			this.os.flush();
 			
 			synchronized(this)
@@ -183,9 +183,29 @@ class ThreadClient extends Thread {
 			System.out.println(nomDuClient + " s'est déconnecté.");
 			clients.remove(this);
 			
+			synchronized(this) {
+
+				if (!clients.isEmpty()) {
+					for (ThreadClient clientCourrant : clients) {
+
+						if (clientCourrant != null && clientCourrant != this && clientCourrant.clientName != null) {
+							clientCourrant.os.writeObject("*** L'utilisateur " + nomDuClient + " s'est déconnecté. ***");
+							clientCourrant.os.flush();
+						}
+					}
+				}
+			}
+
+			this.is.close();
+			this.os.close();
+			clientSocket.close();
+			
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println("session terminée");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Class Not Found");
 		}		
+		
 	}
 	
 	void blockcast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} //a ecrire
