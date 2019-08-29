@@ -165,7 +165,10 @@ class ThreadClient extends Thread {
 
 				else if(ligne.startsWith("!"))
 				{
-					blockcast(ligne,nomDuClient);
+					//blockcast(ligne,nomDuClient); //a ecrire ou ignorer pour le moment
+					//blockcast envoi a tous except un client
+					//not required at this stage
+					break;
 				}
 
 				else 
@@ -201,7 +204,7 @@ class ThreadClient extends Thread {
 			this.os.close();
 			clientSocket.close();
 			
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println("session terminée");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Class Not Found");
@@ -209,7 +212,7 @@ class ThreadClient extends Thread {
 		
 	}
 	
-	void blockcast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} //a ecrire
+//	void blockcast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} //a ecrire
 	
 	void unicast(String line, String name) throws IOException, ClassNotFoundException {
 
