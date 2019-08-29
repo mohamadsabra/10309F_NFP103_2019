@@ -209,6 +209,58 @@ class ThreadClient extends Thread {
 	}
 	
 	void blockcast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} //a ecrire
-	void broadcast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} // a ecrire
+	
 	void unicast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} // a ecrire
+	/* *** cette fonction transfer un message ou un ficiher a tous les clients connects au serveru */
+
+	void broadcast(String ligne, String name) throws IOException, ClassNotFoundException {
+
+		/* transferer un fichier a tous les clients */
+
+		if (ligne.split("\\s")[0].toLowerCase().equals("sendfile"))
+		{
+
+			byte[] file_data = (byte[]) is.readObject();
+			synchronized(this){
+				for (ThreadClient clientCourrant : clients) {
+					if (clientCourrant != null && clientCourrant.clientName != null && clientCourrant.clientName!=this.clientName) 
+					{
+						clientCourrant.os.writeObject("Sending_File:"+ligne.split("\\s",2)[1].substring(ligne.split("\\s",2)[1].lastIndexOf(File.separator)+1));
+						clientCourrant.os.writeObject(file_data);
+						clientCourrant.os.flush();
+
+					}
+				}
+
+				this.os.writeObject("Succes! fichier envoye a tous les clients");
+				this.os.flush();
+				System.out.println("Fichier envoye a tous les clients par " + this.clientName.substring(1));
+			}
+		}
+
+		else
+		{
+			/* transferrer un message a tous les clients */
+
+			synchronized(this){
+
+				for (ThreadClient clientCourrant : clients) {
+
+					if (clientCourrant != null && clientCourrant.clientName != null && clientCourrant.clientName!=this.clientName) 
+					{
+
+						clientCourrant.os.writeObject("<" + name + "> " + ligne);
+						clientCourrant.os.flush();
+
+					}
+				}
+
+				this.os.writeObject("succes! Message envoye a tous les clients.");
+				this.os.flush();
+				System.out.println("Message envoye a tous par " + this.clientName.substring(1));
+			}
+
+		}
+
+	}
 }
