@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -210,7 +211,67 @@ class ThreadClient extends Thread {
 	
 	void blockcast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} //a ecrire
 	
-	void unicast(String line, String nomDuClient) throws IOException, ClassNotFoundException {} // a ecrire
+	void unicast(String line, String name) throws IOException, ClassNotFoundException {
+
+		String[] words = line.split(":", 2); 
+
+		/* transfere fichier a un client particulier */
+
+		if (words[1].split(" ")[0].toLowerCase().equals("sendfile"))
+		{
+			byte[] file_data = (byte[]) is.readObject();
+
+			for (ThreadClient clientCourrant : clients) {
+				if (clientCourrant != null && clientCourrant != this && clientCourrant.clientName != null
+						&& clientCourrant.clientName.equals(words[0]))
+				{
+					clientCourrant.os.writeObject("Envoyer le fichier...:"+words[1].split(" ",2)[1].substring(words[1].split("\\s",2)[1].lastIndexOf(File.separator)+1));
+					clientCourrant.os.writeObject(file_data);
+					clientCourrant.os.flush();
+					System.out.println(this.clientName.substring(1) + " a enovye un fichier prive au client "+ clientCourrant.clientName.substring(1));
+
+					/* Echo this message to let the sender know the private message was sent.*/
+
+					this.os.writeObject("Fichier prive envoye a  " + clientCourrant.clientName.substring(1));
+					this.os.flush();
+					break;
+
+				}
+			}
+		}
+
+		/* transfere message a un client particulier*/
+
+		else
+		{
+
+			if (words.length > 1 && words[1] != null) {
+
+				words[1] = words[1].trim();
+
+
+				if (!words[1].isEmpty()) {
+
+					for (ThreadClient clientCourrant : clients) {
+						if (clientCourrant != null && clientCourrant != this && clientCourrant.clientName != null
+								&& clientCourrant.clientName.equals(words[0])) {
+							clientCourrant.os.writeObject("<" + name + "> " + words[1]);
+							clientCourrant.os.flush();
+
+							System.out.println(this.clientName.substring(1) + " a envoye un message prive au client "+ clientCourrant.clientName.substring(1));
+
+							/* Echo this message to let the sender know the private message was sent.*/
+
+							this.os.writeObject("Message prive envoye a " + clientCourrant.clientName.substring(1));
+							this.os.flush();
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	/* *** cette fonction transfer un message ou un ficiher a tous les clients connects au serveru */
 
 	void broadcast(String ligne, String name) throws IOException, ClassNotFoundException {
