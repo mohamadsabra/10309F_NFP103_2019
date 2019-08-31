@@ -2,12 +2,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
 /*
- * Un serveur de discussion qui fournit des messages et des fichiers publics et privés.
+ * Un serveur de discussion qui fournit des messages et des fichiers publics et prives.
  */
 public class Serveur {
 	
@@ -23,24 +24,25 @@ public class Serveur {
 		int numeroDuPort = 1234;
 			
 		if (args.length < 1) 
-		{System.out.println("Aucun port spécifié par l'utilisateur. \\nLe serveur est en cours d'exécution avec le numéro de port par défaut=" + numeroDuPort);} 
+		{System.out.println("Aucun port specifie par l'utilisateur. \nLe serveur est en cours d'execution avec le numero de port par defaut=" + numeroDuPort);} 
 		else 
 		{
 			numeroDuPort = Integer.valueOf(args[0]).intValue();
-			System.out.println("Le serveur est en cours d'exécution avec le numéro de port spécifié=" + numeroDuPort);
+			System.out.println("Le serveur est en cours d'execution avec le numero de port specifie=" + numeroDuPort);
 		}
 		
 		/*
-		 * Ouvrir un socket de serveur sur numeroDuPort (1234 par défaut).
+		 * Ouvrir un socket de serveur sur numeroDuPort (1234 par defaut).
 		 */
 		try {
 			serverSocket = new ServerSocket(numeroDuPort);
 		} catch (IOException e) {
-			System.out.println("Le Socket Serveur ne peut pas être créé");		
+			System.out.println("Le Socket Serveur ne peut pas être cree");		
+			return;
 		}
 		
 		/*
-		 * Créez un socket client pour chaque connexion et transmettez-le à un nouveau Thread client
+		 * Creez un socket client pour chaque connexion et transmettez-le à un nouveau Thread client
 		 */
 		
 		int numeroDuClient = 1;
@@ -55,20 +57,20 @@ public class Serveur {
 				
 				clientCourrant.start();
 				
-				System.out.println("Client "  + numeroDuClient + " est connecté!");
+				System.out.println("Client "  + numeroDuClient + " est connecte!");
 				
 				numeroDuClient++;
 
 			} catch (IOException e) {
 
-				System.out.println("Le client n'a pas pu être connecté");
+				System.out.println("Le client n'a pas pu être connecte");
 			}
 		}	
 	}
 }
 
 /*
- * Cette classe de thread client gère des clients individuels dans leurs threads respectifs en ouvrant des flux d'entrée et de sortie distincts.
+ * Cette classe de thread client gère des clients individuels dans leurs threads respectifs en ouvrant des flux d'entree et de sortie distincts.
  */
 class ThreadClient extends Thread {
 	private String clientName = null;
@@ -114,7 +116,7 @@ class ThreadClient extends Thread {
 			this.os.writeObject("*** Bienvenue " + nomDuClient + " à CNAM chat room ***\nSaisir _quit pour quiter le Serveur");
 			this.os.flush();
 
-			this.os.writeObject("Répertoire créé pour recevoir des fichiers"); // a implementer
+			this.os.writeObject("Repertoire cree pour recevoir des fichiers"); // a implementer
 			this.os.flush();
 			
 			synchronized(this)
@@ -142,7 +144,7 @@ class ThreadClient extends Thread {
 
 			while (true) {
 
-				this.os.writeObject("Saisir votre commande ( _quit pour quitter @ pour envoyer un message privé:");
+				this.os.writeObject("Saisir votre commande ( _quit pour quitter @ pour envoyer un message prive:");
 				this.os.flush();
 
 				String ligne = (String) is.readObject();
@@ -153,7 +155,7 @@ class ThreadClient extends Thread {
 					break;
 				}
 
-				/* message privé. */
+				/* message prive. */
 
 				if (ligne.startsWith("@")) {
 
@@ -161,7 +163,7 @@ class ThreadClient extends Thread {
 
 				}
 
-				/* Si le message est bloqué pour un client */
+				/* Si le message est bloque pour un client */
 
 				else if(ligne.startsWith("!"))
 				{
@@ -184,7 +186,7 @@ class ThreadClient extends Thread {
 
 			this.os.writeObject("*** Au revoir " + nomDuClient + " ***");
 			this.os.flush();
-			System.out.println(nomDuClient + " s'est déconnecté.");
+			System.out.println(nomDuClient + " s'est deconnecte.");
 			clients.remove(this);
 			
 			synchronized(this) {
@@ -193,7 +195,7 @@ class ThreadClient extends Thread {
 					for (ThreadClient clientCourrant : clients) {
 
 						if (clientCourrant != null && clientCourrant != this && clientCourrant.clientName != null) {
-							clientCourrant.os.writeObject("*** L'utilisateur " + nomDuClient + " s'est déconnecté. ***");
+							clientCourrant.os.writeObject("*** L'utilisateur " + nomDuClient + " s'est deconnecte. ***");
 							clientCourrant.os.flush();
 						}
 					}
@@ -205,7 +207,7 @@ class ThreadClient extends Thread {
 			clientSocket.close();
 			
 		} catch (IOException e) {
-			System.out.println("session terminée");
+			System.out.println("session terminee");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Class Not Found");
 		}		
