@@ -23,7 +23,42 @@ Le programme serveur utilise le protocole de connexion TCP pour écouter les cli
 6. De même, d'autres clients peuvent être connectés au serveur à l'aide du même programme Client.java. Veuillez noter que si le test du programme est effectué sur un seul ordinateur, des dossiers distincts doivent être créés pour le serveur et chaque client.
 8. Si l’utilisateur ne spécifie aucun port, le client utilise localhost et le port par défaut 1234.
 
-  
+Comment ca marche:
+1. Broadcat: Cette fonctionnalité permet à un utilisateur d'envoyer un message ou un fichier à tous les autres clients connectés au serveur. Pour envoyer le fichier, un mot clé sendfile est utilisé suivi du nom du fichier.
+
+```
+Exemple d'envoi de message:
+————————————————————————————————
+Veuillez entrer commande:
+Bonjour
+
+Exemple d'envoi de fichier:
+————————————————————————————————
+Veuillez entrer commande:
+sendfile nomdufichier.pdf
+```
+
+2. Unicast: Cette fonctionnalité permet à un utilisateur d’envoyer un message ou un fichier à un client particulier connecté au serveur.
+```
+Pour envoyer un message, le format suivant doit être suivi: -
+——————————————————————————————————————————————————— ————————————          
+@ <Nom d'utilisateur cible>: <votre message>
+               
+Pour envoyer un fichier, le format suivant doit être suivi: -
+——————————————————————————————————————————————————— ————————————             
+@ <Nom d'utilisateur cible>: sendfile <votre nom de fichier avec chemin ou sans chemin>
+                          
+Exemple d'envoi de message:
+————————————————————————————————
+Veuillez entrer commande:
+@ Client1: Bonjour
+
+Exemple d'envoi de fichier:
+————————————————————————————————
+Veuillez entrer commande:
+@ Client1: sendfile test.pdf
+```
+
 ## Liens Utils
 http://makemobiapps.blogspot.com/p/multiple-client-server-chat-programming.html
 https://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
