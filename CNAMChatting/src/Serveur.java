@@ -144,7 +144,7 @@ class ThreadClient extends Thread {
 
 			while (true) {
 
-				this.os.writeObject("Saisir votre commande ( _quit pour quitter @ pour envoyer un message prive:");
+				this.os.writeObject("Saisir votre commande ( _quit pour quitter @Nom: message pour envoyer un message prive:");
 				this.os.flush();
 
 				String ligne = (String) is.readObject();
@@ -230,7 +230,7 @@ class ThreadClient extends Thread {
 				if (clientCourrant != null && clientCourrant != this && clientCourrant.clientName != null
 						&& clientCourrant.clientName.equals(words[0]))
 				{
-					clientCourrant.os.writeObject("Envoyer le fichier...:"+words[1].split(" ",2)[1].substring(words[1].split("\\s",2)[1].lastIndexOf(File.separator)+1));
+					clientCourrant.os.writeObject("Sending_File:"+words[1].split(" ",2)[1].substring(words[1].split("\\s",2)[1].lastIndexOf(File.separator)+1));
 					clientCourrant.os.writeObject(file_data);
 					clientCourrant.os.flush();
 					System.out.println(this.clientName.substring(1) + " a enovye un fichier prive au client "+ clientCourrant.clientName.substring(1));

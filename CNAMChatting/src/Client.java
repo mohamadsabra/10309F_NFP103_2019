@@ -172,7 +172,7 @@ public class Client implements Runnable {
 
 			while ((responseLine = (String) is.readObject()) != null)  {
 
-				if (responseLine.equals("Directory Created"))
+				if (responseLine.equals("Repertoire cree pour recevoir des fichiers"))
 				{
 					//creation de la directoire de reception des fichiers */
 
@@ -192,7 +192,7 @@ public class Client implements Runnable {
 					}
 				}
 
-				else if (responseLine.startsWith("Envoyer le fichier...:"))
+				else if (responseLine.startsWith("Sending_File"))
 				{
 
 					try
@@ -224,7 +224,7 @@ public class Client implements Runnable {
 
 				/* quitter l'application */
 
-				if (responseLine.indexOf("*** Bye") != -1)
+				if (responseLine.indexOf("*** Au revoir") != -1)
 				
 					break;
 			}
